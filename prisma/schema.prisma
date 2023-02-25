@@ -1,0 +1,197 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("FILE_URL")
+}
+
+model Packaging {
+  id        Int      @id @unique @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Drug      Drug[]
+  drugId    Int?
+}
+
+model ATCVETCode {
+  id        Int      @id @unique @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Drug      Drug[]
+}
+
+model Drug {
+  id                    Int          @id @unique
+  name                  String
+  identifier            Int
+  authorizationNumber   String
+  authorizedSellingDate DateTime
+  primaryPackaging      Packaging[]
+  ATCVETCodes           ATCVETCode[]
+
+  natureId Int
+  nature   Nature @relation(fields: [natureId], references: [id])
+
+  ownerId Int
+  owner   Owner @relation(fields: [ownerId], references: [id])
+
+  procedureTypeId Int
+  procedureType   ProcedureType @relation(fields: [procedureTypeId], references: [id])
+
+  authorizationStatusId Int
+  authorizationStatus   AuthorizationStatus @relation(fields: [authorizationStatusId], references: [id])
+
+  medicalFormId Int
+  medicalForm   MedicalForm @relation(fields: [medicalFormId], references: [id])
+
+  excipientsQSPId Int?
+  excipientsQSP   ExcipientQSP? @relation(fields: [excipientsQSPId], references: [id])
+
+  speciesDestinations  SpeciesDestination[]
+  administrationRoutes AdministrationRoute[]
+  deliveryConditions   DeliveryCondition[]
+  composition          ActiveSubstanceOnDrug[]
+  saleVariants         SaleVariant[]
+
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  paragraph RCPParagraphs[]
+}
+
+model Paragraph {
+  id              Int            @id @unique @default(autoincrement())
+  titleId         Int
+  title           ParagraphTitle @relation(fields: [titleId], references: [id])
+  content         String
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  RCPParagraphs   RCPParagraphs  @relation(fields: [RCPParagraphsId], references: [id])
+  RCPParagraphsId Int
+}
+
+model RCPParagraphs {
+  id             Int         @id @unique @default(autoincrement())
+  validationDate DateTime?
+  RCPLink        String?
+  paragraphs     Paragraph[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  Drug           Drug?       @relation(fields: [drugId], references: [id])
+  drugId         Int?
+}
+
+model SaleVariant {
+  id                  Int      @id @unique @default(autoincrement())
+  GTINCode            String
+  label               String
+  authorizationNumber String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  drug                Drug[]
+}
+
+model ActiveSubstanceOnDrug {
+  quantity          Float?
+  unit              String?
+  drugId            Int
+  drug              Drug            @relation(fields: [drugId], references: [id])
+  activeSubstanceId Int
+  activeSubstance   ActiveSubstance @relation(fields: [activeSubstanceId], references: [id])
+
+  @@id([drugId, activeSubstanceId])
+}
+
+model ActiveSubstance {
+  id                    Int                     @id @unique
+  description           String
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  ActiveSubstanceOnDrug ActiveSubstanceOnDrug[]
+}
+
+model Nature {
+  id          Int      @id @unique
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  drug        Drug[]
+}
+
+model Owner {
+  id          Int      @id @unique
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  drug        Drug[]
+}
+
+model ProcedureType {
+  id          Int      @id @unique
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  drug        Drug[]
+}
+
+model AuthorizationStatus {
+  id          Int      @id @unique
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  drug        Drug[]
+}
+
+model MedicalForm {
+  id          Int      @id @unique
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  drug        Drug[]
+}
+
+model SpeciesDestination {
+  id          Int      @id @unique
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  drug        Drug[]
+}
+
+model AdministrationRoute {
+  id          Int      @id @unique
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  drug        Drug[]
+}
+
+model DeliveryCondition {
+  id          Int      @id @unique
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Drug        Drug[]
+}
+
+model ExcipientQSP {
+  id          Int      @id @unique
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Drug        Drug[]
+}
+
+model ParagraphTitle {
+  id          Int         @id @unique
+  description String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  Paragraph   Paragraph[]
+}

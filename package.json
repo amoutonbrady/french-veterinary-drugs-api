@@ -1,0 +1,40 @@
+{
+  "name": "p",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/main",
+    "ingest": "tsx scripts/ingest",
+    "seed": "tsx scripts/seed",
+    "dev": "tsx watch src/main",
+    "docker:build": "docker build -t europe-west9-docker.pkg.dev/vet-meds/vet-meds/vets .",
+    "docker:push": "docker push europe-west9-docker.pkg.dev/vet-meds/vet-meds/vets"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^18.14.1",
+    "prettier": "^2.8.4",
+    "prisma": "^4.10.1",
+    "typescript": "5.0.0-beta"
+  },
+  "dependencies": {
+    "@fastify/cors": "^8.2.0",
+    "@fastify/swagger": "^8.3.1",
+    "@fastify/type-provider-typebox": "^2.4.0",
+    "@prisma/client": "^4.10.1",
+    "@sinclair/typebox": "^0.25.24",
+    "fast-xml-parser": "^4.1.2",
+    "fastify": "^4.13.0",
+    "tsx": "^3.12.3"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": true,
+    "trailingComma": "all",
+    "printWidth": 100,
+    "endOfLine": "lf"
+  }
+}
